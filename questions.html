@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Five non-repeating conversation questions, selected at random.">
+  <title>Conversation Cards — Feng Chen</title>
+  <style>
+    :root{--pine:#102a22;--pine-2:#1b3b31;--sage:#70877d;--cream:#f3eee2;--paper:#fbf8f0;--apricot:#c88762;--ink:#202824;--muted:#65706b;--line:#d2cdc1}
+    *{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.55 Inter,Arial,sans-serif}button,a{font:inherit}a{color:inherit;text-decoration:none}.wrap{width:min(1050px,calc(100% - 40px));margin:auto}
+    header{border-bottom:1px solid #ffffff24;background:var(--pine);color:white}.nav{height:72px;display:flex;align-items:center;justify-content:space-between}.brand{font:21px Georgia,serif}.home{font-size:13px;color:#d7dfdb;border-bottom:1px solid #8da096}
+    .intro{padding:72px 0 48px}.kicker{color:#8a5a40;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.intro-grid{display:grid;grid-template-columns:1fr 310px;gap:70px;align-items:end}h1{margin:16px 0 20px;font:400 clamp(46px,7vw,78px)/.95 Georgia,serif;letter-spacing:-.045em;color:var(--pine)}.lead{max-width:690px;margin:0;color:#49544f;font:23px/1.45 Georgia,serif}.control{padding:25px;background:var(--pine-2);color:white}.control p{margin:0 0 18px;color:#d5ddd9;font-size:14px}.draw{width:100%;border:0;background:var(--apricot);color:#1e211f;padding:15px 18px;font-weight:800;cursor:pointer;transition:transform .15s,background .15s}.draw:hover{background:#d49a77;transform:translateY(-1px)}.draw:focus-visible{outline:3px solid white;outline-offset:3px}.status{display:block;margin-top:12px;color:#aebcb5;font-size:12px}
+    main{padding:10px 0 80px}.empty{border-top:1px solid var(--line);padding:50px 0;color:var(--muted);font:22px Georgia,serif}.cards{display:grid;gap:12px;counter-reset:card}.card{counter-increment:card;display:grid;grid-template-columns:62px 1fr;align-items:center;min-height:112px;background:var(--paper);border:1px solid var(--line);padding:18px 26px;opacity:0;transform:translateY(8px);animation:arrive .38s ease forwards}.card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.2s}.card:before{content:counter(card,decimal-leading-zero);font:18px Georgia,serif;color:var(--apricot)}.card p{margin:0;font:clamp(20px,2.4vw,27px)/1.35 Georgia,serif}.card:nth-child(odd){border-left:4px solid var(--pine-2)}.card:nth-child(even){border-left:4px solid var(--apricot)}
+    footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:12px}.footer-row{display:flex;justify-content:space-between;gap:20px}
+    @keyframes arrive{to{opacity:1;transform:none}}@media(max-width:760px){.intro{padding-top:50px}.intro-grid{grid-template-columns:1fr;gap:34px}.control{max-width:none}.card{grid-template-columns:42px 1fr;padding:17px 18px;min-height:104px}.card p{font-size:20px}.footer-row{display:block}.footer-row span{display:block;margin-top:5px}}@media(prefers-reduced-motion:reduce){.draw{transition:none}.card{animation:none;opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav"><a class="brand" href="index.html">Feng Chen · 馮 晨</a><a class="home" href="index.html">Back to homepage</a></div></header>
+  <section class="intro"><div class="wrap intro-grid"><div><div class="kicker">Conversation starter</div><h1>Five questions.<br>See where they lead.</h1><p class="lead">Draw five questions for your group. No question repeats until the complete set has been used.</p></div><div class="control"><p>Use one question or all five. There is no required order.</p><button class="draw" id="draw" type="button">Draw 5 questions</button><span class="status" id="status" aria-live="polite">50 questions available</span></div></div></section>
+  <main class="wrap"><div class="empty" id="empty">Your questions will appear here.</div><section class="cards" id="cards" aria-live="polite" aria-label="Selected conversation questions"></section></main>
+  <footer><div class="wrap footer-row"><span>Conversation Cards</span><span>Questions are shuffled locally in your browser.</span></div></footer>
+  <script>
+    const questions=[
+      "What’s something you’ve been really into lately?",
+      "What could you talk about for 10 minutes with zero preparation?",
+      "What’s a useless skill you’re surprisingly good at?",
+      "What’s one app you open without even thinking?",
+      "If you could keep only three apps on your phone, which ones would you choose?",
+      "What’s the last thing that made you laugh really hard?",
+      "What’s your go-to emoji or sticker?",
+      "What’s a food combination you like that other people might think is weird?",
+      "What’s one food from your country or hometown that everyone should try?",
+      "What’s your favorite convenience store snack or drink?",
+      "What’s something everyone seems to love, but you just don’t get?",
+      "What’s one small thing that can instantly make your day better?",
+      "What’s your favorite way to waste time when you should be doing something else?",
+      "Are you a “start early” person or a “deadline gives me power” person?",
+      "Do you prefer studying with music or in complete silence?",
+      "What surprised you most after starting university?",
+      "What’s one thing about university life that was different from what you expected?",
+      "What’s your survival item for university life?",
+      "What’s one class you enjoyed more than you expected?",
+      "What’s the latest you’ve ever stayed up working on an assignment or project?",
+      "If you could create one completely unnecessary university course, what would it be?",
+      "What’s something you wish you had known before starting university?",
+      "What’s something normal in your country or hometown that you think should exist everywhere?",
+      "What’s something you thought was normal until you found out other people don’t do it?",
+      "What’s one place in your hometown that you would recommend to a visitor?",
+      "If you could instantly travel anywhere this weekend, where would you go?",
+      "If you had a completely free day tomorrow, how would you spend it?",
+      "If you suddenly received $1,000 / ¥150,000 and had to spend it on something fun, what would you buy?",
+      "What’s the best thing you’ve bought recently for a surprisingly low price?",
+      "If AI could permanently take over one annoying task in your life, what would you choose?",
+      "What’s the weirdest or most useful thing you’ve ever asked an AI to do?",
+      "If you could instantly become really good at one skill, what would it be?",
+      "If you could switch majors for one week, what would you choose?",
+      "If you could try any job for just one day, what would you choose?",
+      "What hobby would you like to try if time and money were not a problem?",
+      "If you could have any animal as a pet, realistic or unrealistic, what would you choose?",
+      "Would you rather always be 30 minutes early or always be 10 minutes late?",
+      "Window seat or aisle seat?",
+      "Texting or calling?",
+      "Sweet snacks or salty snacks?",
+      "Morning shower or night shower?",
+      "Pineapple on pizza: yes or no?",
+      "If your group had to go out for dinner tonight, what kind of food would you choose?",
+      "If your group had to spend a whole day together somewhere in Tokyo, where would you go?",
+      "What’s one thing you want to try while you’re in Japan?",
+      "What’s one thing from your culture that you would like people from other countries to know about?",
+      "What’s one recommendation you would give to someone visiting your country for the first time?",
+      "What’s something you and your friends can never agree on?",
+      "What’s a small thing that you are strangely picky about?",
+      "What’s something you recently discovered and immediately wanted to recommend to someone else?"
+    ];
+    const key="feng-conversation-deck-v1";
+    const shuffle=items=>{const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+    const freshDeck=avoid=>{let deck=shuffle(questions.map((_,i)=>i));if(deck[0]===avoid&&deck.length>1)[deck[0],deck[1]]=[deck[1],deck[0]];return deck};
+    let state;try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
+    if(!state||!Array.isArray(state.deck)||typeof state.used!=="number")state={deck:freshDeck(-1),used:0,last:-1,round:1};
+    const cards=document.getElementById("cards"),empty=document.getElementById("empty"),status=document.getElementById("status"),button=document.getElementById("draw");
+    const updateStatus=()=>{status.textContent=`${state.used} of ${questions.length} used · round ${state.round}`};
+    button.addEventListener("click",()=>{const selected=[];while(selected.length<5){if(!state.deck.length){state.round++;state.used=0;state.deck=freshDeck(state.last)}const next=state.deck.shift();if(!selected.includes(next)){selected.push(next);state.last=next;state.used++}}localStorage.setItem(key,JSON.stringify(state));cards.innerHTML=selected.map(q=>`<article class="card"><p>${questions[q]}</p></article>`).join("");empty.hidden=true;button.textContent="Draw another 5";updateStatus()});
+    updateStatus();
+  </script>
+</body>
+</html>
